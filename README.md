@@ -1,0 +1,1 @@
+<img width="1654" height="2339" alt="Development-of-an-optimum-locating-program-for-indoor-Customer-Premise-Equipment-installations-1" src="https://github.com/user-attachments/assets/28bcc130-6cd7-40c5-a2bf-19883cc4e769" />

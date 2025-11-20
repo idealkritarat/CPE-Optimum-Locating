@@ -1,0 +1,169 @@
+
+body{
+    font-family: 'Kanit';
+    background: #fbf9ff;
+}
+
+button {
+    border-radius: 5px;
+    color: white;
+    background-color: #315496;
+    border: none;
+    padding: 13px;
+    padding-left: 18px;
+    padding-right: 18px;
+    font-size: 15px;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: #1c3a72;
+}
+
+.rpform{
+    display: none;
+    text-align: center;
+    color: #000000;
+    float:left;
+    height: 100%;
+}
+
+.rpform h{
+    display: block;
+    text-align: center;
+    color: #000000;
+    padding: 13px;
+    border-radius: 10px;
+    margin: 5px;
+    float:left;
+}
+
+.rpform div{
+    display: block;
+    text-align: center;
+    float:left;
+}
+
+.rpform p{
+    display: block;
+    text-align: center;
+    color: #000000;
+    padding: 13px;
+    border-radius: 10px;
+    margin: 5px;
+    float:left;
+}
+.rpform input{
+    display: block;
+    text-align: center;
+    font-size: 15px;
+    background-color: rgb(240,240,240);
+    color: #000000;
+    padding: 5px;
+    border-radius: 2px;
+    margin-left:5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    float:left;
+    width: 100px;
+}
+
+.rpform input[name="rsrp_checkbox"],.rpform input[name="pci_radio"]{
+    display: block;
+    text-align: center;
+    font-size: 50px;
+    background-color: rgb(240,240,240);
+    color: #000000;
+    padding: 0px;
+    margin:0px;
+    margin-right:5px;
+    height:24px;
+    float:left;
+    width:auto;
+}
+
+
+.rpform button{
+    display: block;
+    text-align: center;
+    font-size: 10px;
+    background-color: LightSkyBlue;
+    color: #000000;
+    padding: 13px;
+    border-radius: 10px;
+    margin-left:5px;
+    float:left;
+}
+
+
+
+.nav{
+    display: block;
+    border-radius: 10px;
+    height:60px;
+    width:100%;
+    margin-top: 5px;
+}
+
+.nav a,.nav button{
+    font-family: 'Kanit';
+    display: block;
+    text-align: center;
+    background-color: rgb(240,240,240);
+    color: #000000;
+    padding: 13px;
+    border-radius: 10px;
+    margin: 5px;
+    float:left;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+
+/*.nav button{
+    background-color: #2fa5f3;
+}*/
+
+.nav button:hover,.nav a:hover{
+    cursor:pointer;
+    background-color: rgb(179, 223, 250);
+}
+
+.nav p{
+    display: block;
+    text-align: center;
+    color: #000000;
+    padding: 13px;
+    border-radius: 10px;
+    margin: 5px;
+    float:left;
+}
+
+#trash:active{
+    background-color: aliceblue;
+}
+
+
+.unselectable {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.marker{
+    background-size: 15px 15px;
+}
+
+.marker:hover {
+    cursor:pointer;
+}
+
+/*.scrbar{
+    width: 100%;
+    overflow: hidden;
+    overflow-y: scroll;
+    overflow-x: scroll;
+}*/

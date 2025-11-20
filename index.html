@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset=utf-8 />
+    <meta name = "viewport" content = "width=device-width, minimum-scale=1.0, maximum-scale = 1.0, user-scalable = no">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link href='https://fonts.googleapis.com/css?family=Kanit&subset=thai,latin' rel='stylesheet' type='text/css'>
+</head>
+
+<body class="unselectable">
+    <div id="toolbar" class="nav">
+        <button class="mainnav" id="write" onclick="nav_func(this)"><i class="fa fa-pencil"></i></button>
+        <button class="mainnav" id="saves" onclick="nav_func(this);resize_dots();outofdot();"><i class="fa fa-folder-open-o"></i></button>
+        <button class="mainnav" id="trash" onclick="if(x>0){removedot()};writing=false"><i class="fa fa-trash-o"></i></button>
+        <button class="mainnav" id="settings" onclick="nav_func(this)"><i class="fa fa-gear"></i></button>
+        <div id="wholeform" class="rpform">
+            <div style="width:170px"a><h id="dothead">Dashboard</h></div>
+            <button onclick="ondots(0)"><<</button>
+            <button onclick="if(selecteddot>0)ondots(--selecteddot)"><</button>
+            <button onclick="if(selecteddot<x-1)ondots(++selecteddot)">></button>
+            <button onclick="ondots(x-1)">>></button>
+            <p id="rsrpshow">rsrp : </p>
+            <button id="+rsrp" onclick="plus('rsrp')">+</button>
+            <div id="rsrpform" style="display:none;">
+                <input type="text" id="rsrpinput" onchange="filling('rsrp')">
+            </div>
+            <p id="pcishow">pci : </p>
+            <button id="+pci" onclick="plus('pci')">+</button>
+            <div id="pciform" style="display:none;">
+                <input type="text" id="pciinput" onchange="filling('pci')">
+            </div>
+        </div>
+        <div id="saveload" class="rpform">
+            <h style="font-size:auto;padding-right: 0px;"><b>Saves</b></h>
+            <div style="width:160px;text-align:left;padding: 0px;padding-right:18px;">
+                <p id="SAVEs_name" style="width:100%;padding-top:13px;padding-left:0px;height:25px;vertical-align:middle;">NONE SELECTED</p>
+            </div>
+            <button id="savebutton" onclick="SAVEPAGE()">save</button>
+            <button id="loadbutton" onclick="LOADPAGE()">load</button>
+            <button id="loadbutton" onclick="DELETEPAGE()">delete</button>
+            <a id='slot1' onclick="selected_slot=1;Click_saves('SLOT 1');">SLOT 1          <i id='slotstatus1' class="fa fa-calendar-o"></i></a>
+            <a id='slot2' onclick="selected_slot=2;Click_saves('SLOT 2');">SLOT 2          <i id='slotstatus2' class="fa fa-calendar-o"></i></a>
+        </div>
+        <div id="settingsform" class="rpform" >
+            <h style="font-size:15px;"><b>RSRP vision</b></h>
+            <div style="text-align:left;overflow-y:scroll;width:250px;height:100%">
+                <input type="checkbox" id="r1" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -75<=x< 0 </label><br>
+                <input type="checkbox" id="r2" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -85<=x<-75 </label><br>
+                <input type="checkbox" id="r3" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -95<=x<-85 </label><br>
+                <input type="checkbox" id="r4" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -105<=x<-95 </label><br>
+                <input type="checkbox" id="r5" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -115<=x<-105 </label><br>
+                <input type="checkbox" id="r6" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> -125<=x<-115 </label><br>
+                <input type="checkbox" id="r7" name="rsrp_checkbox" onclick="filter()" checked>
+                <label for="rsrp_checkbox"> x<-125 </label><br><br>
+            </div>
+            <h style="font-size:15px"><b>PCI vision</b></h>
+            <div id="pcifilter"style="text-align:left;overflow-y:scroll;width:250px;height:100%">
+                <input type="radio" id="pciall" name="pci_radio" onclick="filter()" checked >
+                <label for="pciall">All</label><br>
+            </div>
+            <button onclick="ALbutton()" style="margin-left:20px;">Analyze</button>
+            <button onclick="clearCPE()">Clear CPE</button>
+            <button onclick="Proportion()">Ratio</button>
+            <div id="pptform" style="display: none;">
+                <input  id="pptdistance" type="text" placeholder="Distance" onchange="distanceppt()">
+                <p>M.</p>
+            </div>
+            <p id="ppttell" style="display: none;">The Ratio is </p>
+            
+        </div>
+    </div>
+
+    
+    
+    <div id="upload_form">
+        <label for="myfile" style="font-size: 20px;">Select a file:</label>
+        <input type="file" id="file" name="myfile" onchange="readURL(this);" style="font-size:15px;"><br>
+        <button onclick="showImg();" style="margin-top:10px">UPLOAD</button><br>
+    </div>
+    <div id="scrbar" style="float:left;width:100%;">
+        <img id="imageholder" style="display:inline;width:100%;">
+    </div>
+    <div id="cpemap" style="float:left;width:100%;">
+    </div>
+
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    imgfile =  e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+
+
+    <!--don't delete this-->
+     
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="localstorage.js"></script>
+    <script src="DotsFunc.js"></script>
+    <script src="analysis.js"></script>
+    <script src="Proportion.js"></script>
+    <script>
+        var imgfile,
+            selecteddot = 1,
+            writing = false;           
+        var rsrp = [];var pci = [];var xarr = []; var yarr = [];
+
+        function nav_func(that){
+            pptwrite=false;
+            //document.getElementById('write').style.backgroundColor = 'white';
+            //document.getElementById('saves').style.backgroundColor = 'white';
+            //document.getElementById('settings').style.backgroundColor = 'white';
+            document.getElementById('settingsform').style.display = 'none';
+            document.getElementById('saveload').style.display = 'none';
+            //that.style.backgroundColor = 'LightSkyBlue';
+            if(that.id=='write'){
+                if(writing==false)writing = true;
+                else{
+                    writing = false;
+                    //document.getElementById('write').style.backgroundColor = 'white';
+                    return;
+                }   
+            }else writing = false;
+            if(that.id=="settings"){
+                document.getElementById('wholeform').style.display = 'none';
+                document.getElementById('saveload').style.display = 'none';
+                document.getElementById('settingsform').style.display = 'block';
+                resize_dots();
+            }
+            if(that.id=="saves"){
+                document.getElementById('wholeform').style.display = 'none';
+                document.getElementById('saveload').style.display = 'block';
+                document.getElementById('settingsform').style.display = 'none';
+                resize_dots();
+            }
+            //console.log(writing);
+        }
+        function plus(txt){
+            document.getElementById(txt + 'form').style.display = 'inline';
+            document.getElementById("+" + txt).style.display = 'none';
+            document.getElementById(txt + 'input').focus();
+        }
+        function filling(txt){
+            document.getElementById(txt + "show").innerHTML = txt + " : " + document.getElementById(txt + "input").value;
+            if(txt == "rsrp"){
+                rsrp[selecteddot] = document.getElementById(txt + "input").value;
+                document.getElementById(txt + "show").innerHTML = txt + " : " + document.getElementById(txt + "input").value + " dBm";
+                plus('pci');
+            }
+            else if (txt == "pci"){
+                let temp = pci[selecteddot];
+                pci[selecteddot] = document.getElementById(txt + "input").value;
+                if(temp!="not filled")pcicheckbox_remove(temp);
+                pcicheckbox(document.getElementById(txt + "input").value);
+                if(selecteddot!=x-1 && (rsrp[selecteddot+1]=="not filled" || pci[selecteddot+1]=="not filled")){
+                    ondots(++selecteddot);
+                    plus('rsrp');
+                }
+            }
+            if(txt == "rsrp") recolor(document.getElementById(txt + "input").value)
+            document.getElementById(txt + "input").value = "";
+            document.getElementById(txt + "form").style.display = 'none';
+            document.getElementById("+" + txt).style.display = 'inline';
+        }
+
+        function filter(){
+            for(i=0;i<x;i++){
+                //console.log(i +     ' : ' + Math.floor((-rsrp[i]-56)/10));
+                if((document.getElementById('pci'+pci[i]).checked || document.getElementById('pciall').checked)){
+                    if(rsrp[i]>-75){
+                        if(document.getElementById('r1').checked)document.getElementById('dot'+i).style.display = 'inline';
+                        else document.getElementById('dot'+i).style.display = 'none';
+                    }
+                    else if(rsrp[i]<-125){
+                        if(document.getElementById('r7').checked)document.getElementById('dot'+i).style.display = 'inline';
+                        else document.getElementById('dot'+i).style.display = 'none';
+                    }
+                    else {
+                        if(document.getElementById('r'+Math.floor((-rsrp[i]-56)/10)).checked)document.getElementById('dot'+i).style.display = 'inline'
+                        else document.getElementById('dot'+i).style.display = 'none';
+                    }
+                } else document.getElementById('dot'+i).style.display = 'none';
+            }
+        }
+
+        /*function pcicb_onclick(y){
+            rehide_dots();
+            for(i=0;i<x;i++){
+                if(pci[i]==y || y=="all")document.getElementById("dot"+i).style.display='inline';
+            }
+            for(i=1;i<=7;i++){
+                document.getElementById("r"+i).checked=true;
+            }
+        }
+
+        function rsrpcb_onclick(y,p){
+            if(document.getElementById("pciall").checked==false){
+                document.getElementById("pciall").checked = true;
+                for(i=0;i<x;i++)document.getElementById("dot"+i).style.display='inline';
+            }
+                if(y==1){
+                    if(p==true)for(i=0;i<x;i++){if(rsrp[i]<0 && rsrp[i]>=-65-(y*10))document.getElementById("dot"+i).style.display='inline';}
+                    else for(i=0;i<x;i++){console.log(5);if(rsrp[i]<0 && rsrp[i]>=-65-(y*10))document.getElementById("dot"+i).style.display='none';}
+                    //console.log(0 + "> x >=" + (-65-(y*10)));
+                }
+                else if(y<7){
+                    if(p==true)for(i=0;i<x;i++){if(rsrp[i]<-55-(y*10) && rsrp[i]>=-65-(y*10))document.getElementById("dot"+i).style.display='inline';}
+                    else for(i=0;i<x;i++){if(rsrp[i]<-55-(y*10) && rsrp[i]>=-65-(y*10))document.getElementById("dot"+i).style.display='none';}
+                    //console.log((-55-(y*10)) + "> x >=" + (-65-(y*10)));
+                }
+                else{
+                    if(p==true)for(i=0;i<x;i++){if(rsrp[i]<-55-(y*10))document.getElementById("dot"+i).style.display='inline';}
+                    else for(i=0;i<x;i++){if(rsrp[i]<-55-(y*10))document.getElementById("dot"+i).style.display='none';}
+                    //console.log((-55-(y*10)) + "> x");
+                }
+                         
+        }*/
+
+        var settingsPCI = [];
+        function is_insettingsform(y){
+            for(k=0;k<settingsPCI.length;k++){
+                if(settingsPCI[k]==y)return true;
+            }
+            return false;
+        }
+        function is_pcileft(y){
+            for(i=0;i<pci.length;i++){
+                if(pci[i]==y)return true;
+            }
+            return false;
+        }
+
+        function pcicheckbox_remove(j){
+            if(!is_pcileft(j)){
+                document.getElementById("pci"+j).remove();
+                document.getElementById("labelpci"+j).remove();
+                for(i=0;i<settingsPCI.length;i++){
+                    if(settingsPCI[i]==j){
+                        settingsPCI.splice(i,1);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function pcicheckbox(y){
+            if(!is_insettingsform(y)){
+                $("#pcifilter").append(
+                    $('<input type="radio" id="pci' + y + '" name="pci_radio" onclick="filter()">'),
+                    $('<label for="pci' + y + '" id="labelpci' + y + '"> ' + y + ' <label><br>')
+                );
+                settingsPCI.push(y);
+            }
+        }
+
+        function showImg(){
+            if(imgfile!=null){
+                var image = document.getElementById('imageholder');
+                image.src = imgfile;
+                document.getElementById("upload_form").style.display = 'none';
+                document.getElementById("scrbar").style.display = 'inline';
+            }else swal("Please choose an image of a layout.")
+            document.getElementById("toolbar").style.display = "block";
+            console.log(document.getElementById('file').files[0]);
+        }; 
+
+        function recolor(gain){
+            const redot = document.getElementById('dot'+selecteddot).style;
+            if(gain<-125)redot.background='black';
+            else if (gain<-115)redot.background='red';
+            else if (gain<-105)redot.background='#FF33FF';
+            else if (gain<-95)redot.background='yellow';
+            else if (gain<-85)redot.background='#4FFF33';
+            else if (gain<-75)redot.background='#33F9FF';
+            else if (gain<-0)redot.background='blue';
+            else invalid();
+        }
+        
+        function invalid(){
+            document.getElementById('dot'+selecteddot).style.background='Maroon';
+            document.getElementById("rsrpshow").innerHTML = "rsrp : " + "Invalid Data";
+            rsrp[selecteddot] = "Invalid Data";
+            document.getElementById("rsrpinput").value = "";
+            document.getElementById("rsrpform").style.display = 'none';
+            document.getElementById("+rsrp").style.display = 'inline';
+            console.log("Invalid input");
+        }
+        
+        function formjump(){
+            if(document.getElementById("wholeform").style.top == "380px")document.getElementById("wholeform").style.top = "100px";
+            else document.getElementById("wholeform").style.top = "380px";
+            if(document.getElementById("settingsform").style.top == "380px")document.getElementById("settingsform").style.top = "100px";
+            else document.getElementById("settingsform").style.top = "380px";
+            if(document.getElementById("saveload").style.top == "380px")document.getElementById("saveload").style.top = "100px";
+            else document.getElementById("saveload").style.top = "380px";
+        }
+
+    </script>
+    
+    <script type="text/javascript">
+            var x=0;
+            $('#imageholder').click(function(event) {
+                if(writing){
+                    var hor = (event.offsetX),
+                        ver = (event.offsetY+65);
+                    document.getElementById("wholeform").style.display = 'block';
+                
+                    //console return x,y coordinates
+                    console.log("dot " + (x+1) + " : x = " + hor + " y = " + ver);
+
+                    yarr.push(ver);
+                    xarr.push(hor);
+                    rsrp.push("not filled") ;
+                    pci.push("not filled");
+                    $("#scrbar").prepend(
+                        $('<div class="marker" style="border-radius: 50%;"'+ ' id="dot' +x+ '" onclick="ondots(' + x + ')"></div>').css({
+                            position: 'absolute',
+                            top: ver + 'px',
+                            left: hor + 'px',
+                            width: '15px',
+                            height: '15px',
+                            background : 'Maroon',
+                            display:'inline',
+                        })
+                    );
+                    ondots(x);
+                    x++;
+                }    
+            });
+
+            //fix that when your mouse keep draging the image
+            $('img').on('dragstart', function(event) { event.preventDefault(); });
+
+    </script>
+
+</body>
+
+</html>
